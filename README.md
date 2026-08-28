@@ -442,3 +442,7 @@ From a product perspective, SoundSync demonstrates that a small, focused interac
 ### Play. Feel. Enjoy.
 
 **Feel the hook. Own the moment.**
+
+
+<img width="1910" height="918" alt="image" src="https://github.com/user-attachments/assets/fc94b48f-83cd-47d4-9e10-c875d88269db" />
+
