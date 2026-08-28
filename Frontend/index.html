@@ -1,0 +1,1045 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="description"
+        content="SoundSync - Feel the Hook. Own the Moment."
+    >
+
+    <title>SoundSync</title>
+
+
+    <!-- =====================================================
+         FONT
+         ===================================================== -->
+
+    <link
+        rel="preconnect"
+        href="https://fonts.googleapis.com"
+    >
+
+    <link
+        rel="preconnect"
+        href="https://fonts.googleapis.com"
+        crossorigin
+    >
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet"
+    >
+
+
+    <!-- =====================================================
+         FONT AWESOME
+         ===================================================== -->
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    >
+
+
+    <!-- =====================================================
+         MAIN CSS
+         ===================================================== -->
+
+    <link
+        rel="stylesheet"
+        href="css/style.css"
+    >
+
+</head>
+
+
+<body>
+
+
+    <!-- =====================================================
+         MOBILE MENU
+         ===================================================== -->
+
+    <button
+        id="mobileMenu"
+        class="mobile-menu"
+        type="button"
+        aria-label="Open menu"
+    >
+
+        <i class="fa-solid fa-bars"></i>
+
+    </button>
+
+
+
+    <!-- =====================================================
+         SIDEBAR
+         ===================================================== -->
+
+    <aside class="sidebar">
+
+
+        <!-- LOGO -->
+
+        <div class="sidebar-logo">
+
+            <div class="logo-mark">
+
+                <i class="fa-solid fa-headphones"></i>
+
+            </div>
+
+
+            <div class="logo-text">
+
+                <strong>
+                    SOUNDSYNC
+                </strong>
+
+                <span>
+                    FEEL THE HOOK
+                </span>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- NAVIGATION -->
+
+        <nav class="main-navigation">
+
+
+            <!-- HOME -->
+
+            <button
+                class="nav-item active"
+                type="button"
+                data-section="home"
+            >
+
+                <i class="fa-solid fa-house"></i>
+
+                <span>
+                    HOME
+                </span>
+
+            </button>
+
+
+            <!-- SONGS -->
+
+            <button
+                class="nav-item"
+                type="button"
+                data-section="songs"
+            >
+
+                <i class="fa-solid fa-music"></i>
+
+                <span>
+                    SONGS
+                </span>
+
+            </button>
+
+
+            <!-- FAVORITES -->
+
+            <button
+                class="nav-item"
+                type="button"
+                data-section="favorites"
+            >
+
+                <i class="fa-solid fa-heart"></i>
+
+                <span>
+                    FAVORITES
+                </span>
+
+            </button>
+
+
+            <!-- DJ MODE -->
+
+            <button
+                class="nav-item"
+                type="button"
+                data-section="dj"
+            >
+
+                <i class="fa-solid fa-sliders"></i>
+
+                <span>
+                    DJ MODE
+                </span>
+
+            </button>
+
+
+        </nav>
+
+
+
+        <!-- SIDEBAR FOOTER -->
+
+        <div class="sidebar-bottom">
+
+            <div class="sidebar-divider"></div>
+
+            <span>
+                SOUNDSYNC v1.0
+            </span>
+
+        </div>
+
+
+    </aside>
+
+
+
+    <!-- =====================================================
+         MAIN CONTENT
+         ===================================================== -->
+
+    <main class="main-content">
+
+
+        <!-- =================================================
+             TOP BAR
+             ================================================= -->
+
+        <header class="topbar">
+
+
+            <!-- BRAND -->
+
+            <div class="topbar-brand">
+
+                <span>
+                    SOUNDSYNC
+                </span>
+
+            </div>
+
+
+            <!-- SEARCH -->
+
+            <div class="search-wrapper">
+
+
+                <i
+                    class="fa-solid fa-magnifying-glass search-icon"
+                ></i>
+
+
+                <input
+                    id="searchInput"
+                    type="search"
+                    placeholder="SEARCH SONGS..."
+                    autocomplete="off"
+                >
+
+
+                <button
+                    id="clearSearch"
+                    class="clear-search"
+                    type="button"
+                    aria-label="Clear search"
+                >
+
+                    <i class="fa-solid fa-xmark"></i>
+
+                </button>
+
+
+            </div>
+
+
+            <!-- ADD SONGS -->
+
+            <button
+                id="addSongsBtn"
+                class="add-top-btn"
+                type="button"
+            >
+
+                <i class="fa-solid fa-plus"></i>
+
+                <span>
+                    ADD SONGS
+                </span>
+
+            </button>
+
+
+        </header>
+
+
+
+        <!-- =================================================
+             FILE INPUT
+             ================================================= -->
+
+        <input
+            id="songFileInput"
+            type="file"
+            accept="audio/*"
+            multiple
+            hidden
+        >
+
+
+
+        <!-- =================================================
+             HOME SECTION
+             ================================================= -->
+
+        <section
+            id="homeSection"
+            class="page-section active-section"
+        >
+
+
+            <!-- =================================================
+                 SOUNDSYNC HERO
+                 ================================================= -->
+
+            <div class="hero-card">
+
+                <img
+                    class="hero-image"
+                    src="assets/images/soundsync-hero.png"
+                    alt="SoundSync - Play. Feel. Enjoy."
+                    draggable="false"
+                >
+
+            </div>
+
+
+
+            <!-- =================================================
+                 SONG SECTION
+                 ================================================= -->
+
+            <div class="section-header">
+
+
+                <div>
+
+                    <span class="section-kicker">
+                        YOUR MUSIC
+                    </span>
+
+
+                    <h2>
+                        SONGS
+                    </h2>
+
+                </div>
+
+
+                <button
+                    class="text-btn"
+                    type="button"
+                    data-section="songs"
+                >
+
+                    VIEW ALL
+
+                    <i
+                        class="fa-solid fa-arrow-right"
+                    ></i>
+
+                </button>
+
+
+            </div>
+
+
+            <div
+                id="popularSongs"
+                class="song-grid"
+            ></div>
+
+
+        </section>
+
+
+
+        <!-- =================================================
+             SONGS SECTION
+             ================================================= -->
+
+        <section
+            id="songsSection"
+            class="page-section"
+        >
+
+
+            <div class="page-heading">
+
+
+                <div>
+
+                    <span class="section-kicker">
+                        YOUR MUSIC
+                    </span>
+
+
+                    <h2>
+                        SONGS
+                    </h2>
+
+
+                    <p>
+                        Add and play your own music.
+                    </p>
+
+                </div>
+
+
+                <button
+                    id="addSongsBtnPage"
+                    class="primary-btn"
+                    type="button"
+                >
+
+                    <i
+                        class="fa-solid fa-plus"
+                    ></i>
+
+                    ADD SONGS
+
+                </button>
+
+
+            </div>
+
+
+            <div
+                id="songsList"
+                class="song-list"
+            ></div>
+
+
+        </section>
+
+
+
+        <!-- =================================================
+             FAVORITES SECTION
+             ================================================= -->
+
+        <section
+            id="favoritesSection"
+            class="page-section"
+        >
+
+
+            <div class="page-heading">
+
+
+                <div>
+
+                    <span class="section-kicker">
+                        YOUR PICKS
+                    </span>
+
+
+                    <h2>
+                        FAVORITES
+                    </h2>
+
+
+                    <p>
+                        Keep the songs you love close.
+                    </p>
+
+                </div>
+
+
+            </div>
+
+
+            <div
+                id="favoriteSongs"
+                class="song-list"
+            ></div>
+
+
+        </section>
+
+
+
+        <!-- =================================================
+             DJ MODE SECTION
+             ================================================= -->
+
+        <section
+            id="djSection"
+            class="page-section"
+        >
+
+
+            <div class="page-heading">
+
+
+                <div>
+
+                    <span class="section-kicker">
+                        SOUND CONTROL
+                    </span>
+
+
+                    <h2>
+                        DJ MODE
+                    </h2>
+
+
+                    <p>
+                        Shape the sound while you enjoy
+                        the moment.
+                    </p>
+
+                </div>
+
+
+            </div>
+
+
+
+            <div class="dj-panel">
+
+
+                <!-- =========================================
+                     CURRENT SONG
+                     ========================================= -->
+
+                <div class="dj-now-playing">
+
+
+                    <div class="dj-cover">
+
+                        <img
+                            id="djCoverImage"
+                            src="assets/images/soundsync-cover.png"
+                            alt="SoundSync"
+                            draggable="false"
+                        >
+
+                    </div>
+
+
+                    <span>
+                        NOW PLAYING
+                    </span>
+
+
+                    <h3 id="djSongName">
+                        NO SONG SELECTED
+                    </h3>
+
+
+                </div>
+
+
+
+                <!-- =========================================
+                     DJ CONTROLS
+                     ========================================= -->
+
+                <div class="dj-controls">
+
+
+                    <!-- SPEED -->
+
+                    <div class="dj-control-card">
+
+
+                        <div class="dj-control-header">
+
+                            <label
+                                for="speedControl"
+                            >
+                                PLAYBACK SPEED
+                            </label>
+
+
+                            <span id="speedValue">
+                                1.0X
+                            </span>
+
+                        </div>
+
+
+                        <input
+                            id="speedControl"
+                            type="range"
+                            min="0.5"
+                            max="2"
+                            step="0.1"
+                            value="1"
+                        >
+
+
+                    </div>
+
+
+
+                    <!-- BASS -->
+
+                    <div class="dj-control-card">
+
+
+                        <div class="dj-control-header">
+
+                            <label
+                                for="bassControl"
+                            >
+                                BASS
+                            </label>
+
+
+                            <span>
+                                50
+                            </span>
+
+                        </div>
+
+
+                        <input
+                            id="bassControl"
+                            type="range"
+                            min="0"
+                            max="100"
+                            value="50"
+                        >
+
+
+                    </div>
+
+
+
+                    <!-- TREBLE -->
+
+                    <div class="dj-control-card">
+
+
+                        <div class="dj-control-header">
+
+                            <label
+                                for="trebleControl"
+                            >
+                                TREBLE
+                            </label>
+
+
+                            <span>
+                                50
+                            </span>
+
+                        </div>
+
+
+                        <input
+                            id="trebleControl"
+                            type="range"
+                            min="0"
+                            max="100"
+                            value="50"
+                        >
+
+
+                    </div>
+
+
+
+                    <!-- DJ VOLUME -->
+
+                    <div class="dj-control-card">
+
+
+                        <div class="dj-control-header">
+
+                            <label
+                                for="djVolume"
+                            >
+                                VOLUME
+                            </label>
+
+
+                            <span>
+                                100%
+                            </span>
+
+                        </div>
+
+
+                        <input
+                            id="djVolume"
+                            type="range"
+                            min="0"
+                            max="1"
+                            step="0.01"
+                            value="1"
+                        >
+
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+
+        </section>
+
+
+    </main>
+
+
+
+    <!-- =====================================================
+         BOTTOM PLAYER
+         ===================================================== -->
+
+    <footer class="bottom-player">
+
+
+        <!-- =================================================
+             CURRENT SONG
+             ================================================= -->
+
+        <div class="player-song">
+
+
+            <img
+                id="currentSongImage"
+                class="player-song-image"
+                src="assets/images/soundsync-cover.png"
+                alt="SoundSync"
+                draggable="false"
+            >
+
+
+            <div class="player-song-text">
+
+
+                <h4 id="currentSongTitle">
+                    NO SONG SELECTED
+                </h4>
+
+
+                <p id="currentSongArtist">
+                    SELECT A SONG TO START
+                </p>
+
+
+            </div>
+
+
+            <!-- PLAYER FAVORITE -->
+
+            <button
+                id="playerFavorite"
+                class="player-favorite"
+                type="button"
+                title="Favorite"
+            >
+
+                <i
+                    class="fa-regular fa-heart"
+                ></i>
+
+            </button>
+
+
+        </div>
+
+
+
+        <!-- =================================================
+             PLAYER CENTER
+             ================================================= -->
+
+        <div class="player-center">
+
+
+            <div class="player-controls">
+
+
+                <!-- SHUFFLE -->
+
+                <button
+                    id="shuffleBtn"
+                    class="player-control"
+                    type="button"
+                    title="Shuffle"
+                >
+
+                    <i
+                        class="fa-solid fa-shuffle"
+                    ></i>
+
+                </button>
+
+
+                <!-- PREVIOUS -->
+
+                <button
+                    id="previousBtn"
+                    class="player-control"
+                    type="button"
+                    title="Previous"
+                >
+
+                    <i
+                        class="fa-solid fa-backward-step"
+                    ></i>
+
+                </button>
+
+
+                <!-- PLAY -->
+
+                <button
+                    id="playPauseBtn"
+                    class="player-play"
+                    type="button"
+                    title="Play / Pause"
+                >
+
+                    <i
+                        class="fa-solid fa-play"
+                    ></i>
+
+                </button>
+
+
+                <!-- NEXT -->
+
+                <button
+                    id="nextBtn"
+                    class="player-control"
+                    type="button"
+                    title="Next"
+                >
+
+                    <i
+                        class="fa-solid fa-forward-step"
+                    ></i>
+
+                </button>
+
+
+                <!-- REPEAT -->
+
+                <button
+                    id="repeatBtn"
+                    class="player-control"
+                    type="button"
+                    title="Repeat"
+                >
+
+                    <i
+                        class="fa-solid fa-repeat"
+                    ></i>
+
+                </button>
+
+
+            </div>
+
+
+
+            <!-- PROGRESS -->
+
+            <div class="player-progress">
+
+
+                <span id="currentTime">
+                    0:00
+                </span>
+
+
+                <input
+                    id="progressBar"
+                    type="range"
+                    min="0"
+                    max="100"
+                    step="0.1"
+                    value="0"
+                >
+
+
+                <span id="duration">
+                    0:00
+                </span>
+
+
+            </div>
+
+
+        </div>
+
+
+
+        <!-- =================================================
+             LET'S GO
+             ================================================= -->
+
+        <div class="lets-go-area">
+
+
+            <button
+                id="letsGoBtn"
+                class="lets-go-btn"
+                type="button"
+                title="Hold to reduce volume to 15%"
+            >
+
+
+                <span class="lets-go-icon">
+
+                    <i
+                        class="fa-solid fa-bolt"
+                    ></i>
+
+                </span>
+
+
+                <span class="lets-go-label">
+                    LET'S GO
+                </span>
+
+
+            </button>
+
+
+            <span class="space-hint">
+                SPACE is for System
+            </span>
+
+
+        </div>
+
+
+
+        <!-- =================================================
+             PLAYER VOLUME
+             ================================================= -->
+
+        <div class="player-right">
+
+
+            <!-- MUTE -->
+
+            <button
+                id="muteBtn"
+                class="player-control"
+                type="button"
+                title="Mute"
+            >
+
+                <i
+                    class="fa-solid fa-volume-high"
+                ></i>
+
+            </button>
+
+
+            <!-- VOLUME BAR -->
+
+            <input
+                id="volumeBar"
+                class="volume-bar"
+                type="range"
+                min="0"
+                max="1"
+                step="0.01"
+                value="1"
+                title="Volume"
+            >
+
+
+            <!-- VISUALIZER -->
+
+            <div
+                id="visualizerBars"
+                class="visualizer-bars"
+                aria-hidden="true"
+            >
+
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+
+            </div>
+
+
+        </div>
+
+
+
+        <!-- =================================================
+             AUDIO ELEMENT
+             ================================================= -->
+
+        <audio
+            id="audioPlayer"
+            preload="metadata"
+            crossorigin="anonymous"
+        ></audio>
+
+
+    </footer>
+
+
+
+    <!-- =====================================================
+         TOAST
+         ===================================================== -->
+
+    <div
+        id="toast"
+        class="toast"
+        role="status"
+        aria-live="polite"
+    ></div>
+
+
+
+    <!-- =====================================================
+         JAVASCRIPT
+         ===================================================== -->
+
+    <script src="js/api.js"></script>
+
+    <script src="js/favorites.js"></script>
+
+    <script src="js/search.js"></script>
+
+    <script src="js/player.js"></script>
+
+    <script src="js/app.js"></script>
+
+
+</body>
+
+</html>
