@@ -3,24 +3,23 @@
  * SOUNDSYNC
  * MAIN APPLICATION
  * =========================================================
- *
- * Features:
- *
- * ✅ Add Songs
- * ✅ Song Library
- * ✅ Search
- * ✅ Favorites
- * ✅ DJ Mode
- * ✅ LET'S GO
- * ✅ Spacebar volume ducking
- *
- * Not included:
- *
- * ❌ Playlists
- * ❌ Recently Played
- *
- * =========================================================
  */
+
+
+/* =========================================================
+   CURRENT SECTION
+   =========================================================
+   
+   IMPORTANT:
+   Store the current page in sessionStorage so that
+   if the browser reloads after uploading a song,
+   SoundSync returns to the same page instead of Home.
+   ========================================================= */
+
+let currentSection =
+    sessionStorage.getItem(
+        "soundsync_current_section"
+    ) || "home";
 
 
 /* =========================================================
@@ -39,10 +38,6 @@ document.addEventListener(
 
 async function initializeApplication() {
 
-    /*
-     * Setup interface.
-     */
-
     setupNavigation();
 
     setupMobileMenu();
@@ -52,11 +47,6 @@ async function initializeApplication() {
     setupDJControls();
 
 
-    /*
-     * Load songs and favorites
-     * from the backend.
-     */
-
     try {
 
         await loadSongsFromBackend();
@@ -64,25 +54,23 @@ async function initializeApplication() {
         await loadFavoritesFromBackend();
 
 
-        /*
-         * Render the Home page.
-         */
-
         renderHome();
-
-
-        /*
-         * Render Songs page.
-         */
 
         renderAllSongs();
 
+        renderFavoriteSongs();
+
 
         /*
-         * Render Favorites page.
+         * IMPORTANT:
+         *
+         * Restore the page that was active before
+         * a browser refresh/reload.
          */
 
-        renderFavoriteSongs();
+        showSection(
+            currentSection
+        );
 
     }
 
@@ -94,11 +82,6 @@ async function initializeApplication() {
         );
 
 
-        /*
-         * Still render the interface
-         * even if backend is unavailable.
-         */
-
         renderHome();
 
         renderAllSongs();
@@ -106,11 +89,41 @@ async function initializeApplication() {
         renderFavoriteSongs();
 
 
+        /*
+         * Even if backend is unavailable,
+         * restore the previous section.
+         */
+
+        showSection(
+            currentSection
+        );
+
+
         showToast(
             "BACKEND IS NOT CONNECTED"
         );
 
     }
+
+}
+
+
+/* =========================================================
+   SAVE CURRENT SECTION
+   ========================================================= */
+
+function saveCurrentSection(
+    sectionName
+) {
+
+    currentSection =
+        sectionName;
+
+
+    sessionStorage.setItem(
+        "soundsync_current_section",
+        sectionName
+    );
 
 }
 
@@ -139,10 +152,6 @@ function setupSongFileSelection() {
         );
 
 
-    /*
-     * Make sure file input exists.
-     */
-
     if (
         !fileInput
     ) {
@@ -157,7 +166,9 @@ function setupSongFileSelection() {
 
 
     /*
-     * Top ADD SONGS button.
+     * =====================================================
+     * TOP ADD SONGS BUTTON
+     * =====================================================
      */
 
     if (
@@ -168,6 +179,20 @@ function setupSongFileSelection() {
             "click",
             () => {
 
+                /*
+                 * Save whichever page the user
+                 * is currently viewing.
+                 */
+
+                saveCurrentSection(
+                    currentSection
+                );
+
+
+                fileInput.dataset.sourceSection =
+                    currentSection;
+
+
                 fileInput.click();
 
             }
@@ -177,7 +202,9 @@ function setupSongFileSelection() {
 
 
     /*
-     * Songs page ADD SONGS button.
+     * =====================================================
+     * SONGS PAGE ADD SONGS BUTTON
+     * =====================================================
      */
 
     if (
@@ -188,6 +215,20 @@ function setupSongFileSelection() {
             "click",
             () => {
 
+                /*
+                 * This button is specifically
+                 * located on the Songs page.
+                 */
+
+                saveCurrentSection(
+                    "songs"
+                );
+
+
+                fileInput.dataset.sourceSection =
+                    "songs";
+
+
                 fileInput.click();
 
             }
@@ -197,7 +238,9 @@ function setupSongFileSelection() {
 
 
     /*
-     * File selected.
+     * =====================================================
+     * FILE SELECTED
+     * =====================================================
      */
 
     fileInput.addEventListener(
@@ -219,6 +262,33 @@ function setupSongFileSelection() {
             }
 
 
+            /*
+             * Get the page that was active BEFORE
+             * the file picker was opened.
+             */
+
+            const sourceSection =
+                fileInput.dataset.sourceSection ||
+                currentSection ||
+                "home";
+
+
+            /*
+             * Save it again so even a browser reload
+             * knows where the user came from.
+             */
+
+            saveCurrentSection(
+                sourceSection
+            );
+
+
+            console.log(
+                "Upload source:",
+                sourceSection
+            );
+
+
             showToast(
                 "UPLOADING SONGS..."
             );
@@ -227,7 +297,7 @@ function setupSongFileSelection() {
             try {
 
                 /*
-                 * Upload through backend.
+                 * Upload songs.
                  */
 
                 const result =
@@ -237,14 +307,22 @@ function setupSongFileSelection() {
 
 
                 /*
-                 * Reload songs from MySQL.
+                 * Reload songs from backend.
                  */
 
                 await loadSongsFromBackend();
 
 
                 /*
-                 * Refresh UI.
+                 * Reload favorites.
+
+                 */
+
+                await loadFavoritesFromBackend();
+
+
+                /*
+                 * Refresh all data.
                  */
 
                 renderHome();
@@ -275,6 +353,7 @@ function setupSongFileSelection() {
 
                 /*
                  * Failed files.
+
                  */
 
                 if (
@@ -299,11 +378,16 @@ function setupSongFileSelection() {
 
 
                 /*
-                 * Open Songs page.
+                 * Restore original page.
                  */
 
+                saveCurrentSection(
+                    sourceSection
+                );
+
+
                 showSection(
-                    "songs"
+                    sourceSection
                 );
 
             }
@@ -316,6 +400,21 @@ function setupSongFileSelection() {
                 );
 
 
+                /*
+                 * Keep the original page even
+                 * when upload fails.
+                 */
+
+                saveCurrentSection(
+                    sourceSection
+                );
+
+
+                showSection(
+                    sourceSection
+                );
+
+
                 showToast(
                     error.message ||
                     "SONG UPLOAD FAILED"
@@ -325,8 +424,9 @@ function setupSongFileSelection() {
 
 
             /*
-             * Clear input so the same
-             * file can be selected again.
+             * Clear input.
+             *
+             * Allows selecting the same file again.
              */
 
             fileInput.value =
@@ -363,10 +463,6 @@ function renderHome() {
         getSongs();
 
 
-    /*
-     * No songs.
-     */
-
     if (
         songs.length === 0
     ) {
@@ -379,11 +475,9 @@ function renderHome() {
                     class="fa-solid fa-music"
                 ></i>
 
-
                 <h3>
                     NO SONGS YET
                 </h3>
-
 
                 <p>
                     ADD YOUR MUSIC TO START.
@@ -397,10 +491,6 @@ function renderHome() {
 
     }
 
-
-    /*
-     * Show songs.
-     */
 
     container.innerHTML =
         songs
@@ -442,11 +532,9 @@ function createSongCard(
             class="song-card"
         >
 
-
             <div
                 class="song-image-container"
             >
-
 
                 <img
                     class="song-image"
@@ -455,8 +543,6 @@ function createSongCard(
                     draggable="false"
                 >
 
-
-                <!-- PLAY -->
 
                 <button
                     class="song-play"
@@ -474,8 +560,6 @@ function createSongCard(
                 </button>
 
 
-                <!-- FAVORITE -->
-
                 <button
                     class="favorite-btn ${favorite ? "active" : ""}"
                     type="button"
@@ -490,7 +574,6 @@ function createSongCard(
                     ></i>
 
                 </button>
-
 
             </div>
 
@@ -507,7 +590,6 @@ function createSongCard(
                 )}
 
             </div>
-
 
         </article>
 
@@ -576,11 +658,9 @@ function renderSongRows(
                     class="fa-solid fa-music"
                 ></i>
 
-
                 <h3>
                     NO SONGS FOUND
                 </h3>
-
 
                 <p>
                     ADD YOUR MUSIC TO SOUNDSYNC.
@@ -615,7 +695,6 @@ function renderSongRows(
                             class="song-row"
                         >
 
-
                             <img
                                 class="song-row-image"
                                 src="${SOUND_SYNC_IMAGE}"
@@ -641,9 +720,6 @@ function renderSongRows(
                                 class="song-row-actions"
                             >
 
-
-                                <!-- FAVORITE -->
-
                                 <button
                                     class="icon-btn ${favorite ? "active" : ""}"
                                     type="button"
@@ -659,8 +735,6 @@ function renderSongRows(
 
                                 </button>
 
-
-                                <!-- PLAY -->
 
                                 <button
                                     class="icon-btn"
@@ -678,8 +752,6 @@ function renderSongRows(
                                 </button>
 
 
-                                <!-- DELETE -->
-
                                 <button
                                     class="icon-btn delete-song"
                                     type="button"
@@ -695,9 +767,7 @@ function renderSongRows(
 
                                 </button>
 
-
                             </div>
-
 
                         </div>
 
@@ -736,10 +806,6 @@ function playSongFromList(
     }
 
 
-    /*
-     * Find selected song.
-     */
-
     const index =
         songs.findIndex(
             song =>
@@ -765,19 +831,10 @@ function playSongFromList(
     }
 
 
-    /*
-     * Use entire library as
-     * current playback list.
-     */
-
     setCurrentPlaylist(
         songs
     );
 
-
-    /*
-     * Load selected song.
-     */
 
     loadSong(
         index
@@ -813,10 +870,6 @@ async function deleteSong(
     }
 
 
-    /*
-     * Confirm deletion.
-     */
-
     const confirmed =
         window.confirm(
             `Delete "${song.songName}" from SoundSync?`
@@ -834,130 +887,16 @@ async function deleteSong(
 
     try {
 
-        /*
-         * Stop playback if this is
-         * the currently loaded song.
-         */
-
-        const currentSong =
-            typeof currentPlaylist !==
-                "undefined" &&
-            currentPlaylist[
-                currentSongIndex
-            ];
-
-
-        if (
-            currentSong &&
-            Number(
-                currentSong.id
-            ) ===
-            Number(
-                songId
-            )
-        ) {
-
-            audioPlayer.pause();
-
-            audioPlayer.removeAttribute(
-                "src"
-            );
-
-            audioPlayer.load();
-
-
-            /*
-             * Reset player UI.
-             */
-
-            const title =
-                document.getElementById(
-                    "currentSongTitle"
-                );
-
-
-            const artist =
-                document.getElementById(
-                    "currentSongArtist"
-                );
-
-
-            const image =
-                document.getElementById(
-                    "currentSongImage"
-                );
-
-
-            if (
-                title
-            ) {
-
-                title.textContent =
-                    "NO SONG SELECTED";
-
-            }
-
-
-            if (
-                artist
-            ) {
-
-                artist.textContent =
-                    "SELECT A SONG TO START";
-
-            }
-
-
-            if (
-                image
-            ) {
-
-                image.src =
-                    SOUND_SYNC_IMAGE;
-
-            }
-
-
-            if (
-                typeof updatePlayButton ===
-                "function"
-            ) {
-
-                updatePlayButton(
-                    false
-                );
-
-            }
-
-        }
-
-
-        /*
-         * Delete from backend.
-         */
-
         await deleteSongFromBackend(
             songId
         );
 
 
-        /*
-         * Reload songs.
-         */
-
         await loadSongsFromBackend();
 
 
-        /*
-         * Reload favorites.
-         */
-
         await loadFavoritesFromBackend();
 
-
-        /*
-         * Refresh all visible UI.
-         */
 
         renderHome();
 
@@ -995,10 +934,6 @@ async function deleteSong(
 
 function setupNavigation() {
 
-    /*
-     * Navigation buttons.
-     */
-
     document
         .querySelectorAll(
             ".nav-item"
@@ -1034,24 +969,12 @@ function setupNavigation() {
         );
 
 
-    /*
-     * Buttons such as:
-     *
-     * VIEW ALL
-     * EXPLORE MUSIC
-     */
-
     document
         .querySelectorAll(
             "[data-section]"
         )
         .forEach(
             element => {
-
-                /*
-                 * Avoid attaching another listener
-                 * to navigation items.
-                 */
 
                 if (
                     element.classList.contains(
@@ -1099,8 +1022,39 @@ function showSection(
     sectionName
 ) {
 
+    const validSections = [
+        "home",
+        "songs",
+        "favorites",
+        "dj"
+    ];
+
+
+    if (
+        !validSections.includes(
+            sectionName
+        )
+    ) {
+
+        sectionName =
+            "home";
+
+    }
+
+
     /*
-     * Hide sections.
+     * IMPORTANT:
+     *
+     * Save the selected page immediately.
+     */
+
+    saveCurrentSection(
+        sectionName
+    );
+
+
+    /*
+     * Hide all sections.
      */
 
     document
@@ -1120,6 +1074,7 @@ function showSection(
 
     /*
      * Show selected section.
+
      */
 
     const target =
@@ -1140,7 +1095,8 @@ function showSection(
 
 
     /*
-     * Update navigation state.
+     * Update navigation.
+
      */
 
     document
@@ -1161,7 +1117,8 @@ function showSection(
 
 
     /*
-     * Refresh selected page.
+     * Refresh page.
+
      */
 
     switch (
@@ -1199,7 +1156,31 @@ function showSection(
 
 
     /*
+     * Close mobile sidebar.
+
+     */
+
+    const sidebar =
+        document.querySelector(
+            ".sidebar"
+        );
+
+
+    if (
+        sidebar &&
+        window.innerWidth <= 760
+    ) {
+
+        sidebar.classList.remove(
+            "mobile-open"
+        );
+
+    }
+
+
+    /*
      * Scroll to top.
+
      */
 
     window.scrollTo({
@@ -1250,33 +1231,6 @@ function setupMobileMenu() {
         }
     );
 
-
-    /*
-     * Close mobile menu after
-     * selecting a page.
-     */
-
-    document
-        .querySelectorAll(
-            ".nav-item"
-        )
-        .forEach(
-            item => {
-
-                item.addEventListener(
-                    "click",
-                    () => {
-
-                        sidebar.classList.remove(
-                            "mobile-open"
-                        );
-
-                    }
-                );
-
-            }
-        );
-
 }
 
 
@@ -1315,10 +1269,6 @@ function setupDJControls() {
             "speedValue"
         );
 
-
-    /*
-     * SPEED
-     */
 
     if (
         speedControl
@@ -1361,10 +1311,6 @@ function setupDJControls() {
     }
 
 
-    /*
-     * VOLUME
-     */
-
     if (
         volumeControl
     ) {
@@ -1381,7 +1327,7 @@ function setupDJControls() {
 
                 if (
                     typeof audioPlayer !==
-                        "undefined"
+                    "undefined"
                 ) {
 
                     audioPlayer.volume =
@@ -1421,10 +1367,6 @@ function setupDJControls() {
     }
 
 
-    /*
-     * BASS
-     */
-
     if (
         bassControl
     ) {
@@ -1449,10 +1391,6 @@ function setupDJControls() {
 
     }
 
-
-    /*
-     * TREBLE
-     */
 
     if (
         trebleControl
@@ -1482,7 +1420,7 @@ function setupDJControls() {
 
 
 /* =========================================================
-   UPDATE DJ SONG
+   DJ SONG DISPLAY
    ========================================================= */
 
 function updateDJSongDisplay() {
@@ -1501,12 +1439,6 @@ function updateDJSongDisplay() {
 
     }
 
-
-    /*
-     * currentPlaylist and
-     * currentSongIndex are created
-     * by player.js.
-     */
 
     if (
         typeof currentPlaylist ===
@@ -1634,42 +1566,32 @@ function showToast(
 window.initializeApplication =
     initializeApplication;
 
-
 window.renderHome =
     renderHome;
-
 
 window.renderAllSongs =
     renderAllSongs;
 
-
 window.renderSongRows =
     renderSongRows;
-
 
 window.createSongCard =
     createSongCard;
 
-
 window.playSongFromList =
     playSongFromList;
-
 
 window.deleteSong =
     deleteSong;
 
-
 window.showSection =
     showSection;
-
 
 window.showToast =
     showToast;
 
-
 window.updateDJSongDisplay =
     updateDJSongDisplay;
-
 
 window.escapeHtml =
     escapeHtml;

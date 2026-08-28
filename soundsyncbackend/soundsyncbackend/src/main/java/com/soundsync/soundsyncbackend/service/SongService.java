@@ -3,6 +3,7 @@ package com.soundsync.soundsyncbackend.service;
 import com.soundsync.soundsyncbackend.entity.Song;
 import com.soundsync.soundsyncbackend.repository.FavoriteRepository;
 import com.soundsync.soundsyncbackend.repository.SongRepository;
+
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
@@ -25,6 +26,7 @@ public class SongService {
     private final SongRepository songRepository;
 
     private final FavoriteRepository favoriteRepository;
+
 
     /*
      * Uploaded audio files are stored
@@ -114,7 +116,7 @@ public class SongService {
     ) {
 
         // -------------------------------------------------
-        // Validate file
+        // VALIDATE FILE
         // -------------------------------------------------
 
         if (
@@ -130,7 +132,7 @@ public class SongService {
 
 
         // -------------------------------------------------
-        // Validate content type
+        // VALIDATE CONTENT TYPE
         // -------------------------------------------------
 
         String contentType =
@@ -139,7 +141,8 @@ public class SongService {
 
         if (
                 contentType == null ||
-                !contentType.startsWith("audio/")
+                !contentType.toLowerCase()
+                        .startsWith("audio/")
         ) {
 
             throw new IllegalArgumentException(
@@ -150,7 +153,7 @@ public class SongService {
 
 
         // -------------------------------------------------
-        // Original filename
+        // GET ORIGINAL FILE NAME
         // -------------------------------------------------
 
         String originalFileName =
@@ -170,7 +173,7 @@ public class SongService {
 
 
         // -------------------------------------------------
-        // Clean filename
+        // CLEAN FILE NAME
         // -------------------------------------------------
 
         String cleanFileName =
@@ -178,11 +181,99 @@ public class SongService {
                         originalFileName
                 )
                 .getFileName()
-                .toString();
+                .toString()
+                .trim();
+
+
+        if (
+                cleanFileName.isBlank()
+        ) {
+
+            throw new IllegalArgumentException(
+                    "Invalid file name"
+            );
+
+        }
+
+
+        // =================================================
+        // DUPLICATE SONG CHECK
+        // =================================================
+        //
+        // We compare normalized filenames so that:
+        //
+        // Song.mp3
+        // song.mp3
+        // Song.MP3
+        // " Song.mp3 "
+        //
+        // are treated as the same uploaded file name.
+        //
+        // This prevents creating another Song record and
+        // another physical audio file.
+        // =================================================
+
+        String normalizedFileName =
+                normalizeFileName(
+                        cleanFileName
+                );
+
+
+        List<Song> existingSongs =
+                songRepository.findAll();
+
+
+        for (
+                Song existingSong :
+                existingSongs
+        ) {
+
+            if (
+                    existingSong == null
+            ) {
+
+                continue;
+
+            }
+
+
+            String existingFileName =
+                    existingSong.getFileName();
+
+
+            if (
+                    existingFileName == null
+            ) {
+
+                continue;
+
+            }
+
+
+            String normalizedExistingName =
+                    normalizeFileName(
+                            existingFileName
+                    );
+
+
+            if (
+                    normalizedFileName.equals(
+                            normalizedExistingName
+                    )
+            ) {
+
+                throw new IllegalArgumentException(
+                        "Song already exists: " +
+                        cleanFileName
+                );
+
+            }
+
+        }
 
 
         // -------------------------------------------------
-        // Song name
+        // SONG NAME
         // -------------------------------------------------
 
         String songName =
@@ -192,7 +283,7 @@ public class SongService {
 
 
         // -------------------------------------------------
-        // File extension
+        // FILE EXTENSION
         // -------------------------------------------------
 
         String extension =
@@ -202,7 +293,7 @@ public class SongService {
 
 
         // -------------------------------------------------
-        // Generate unique stored filename
+        // GENERATE UNIQUE STORED FILE NAME
         // -------------------------------------------------
 
         String storedFileName =
@@ -220,7 +311,24 @@ public class SongService {
 
 
         // -------------------------------------------------
-        // Save physical audio file
+        // SAFETY CHECK
+        // -------------------------------------------------
+
+        if (
+                !destination.startsWith(
+                        uploadDirectory
+                )
+        ) {
+
+            throw new IllegalArgumentException(
+                    "Invalid file path"
+            );
+
+        }
+
+
+        // -------------------------------------------------
+        // SAVE PHYSICAL AUDIO FILE
         // -------------------------------------------------
 
         try {
@@ -242,7 +350,7 @@ public class SongService {
 
 
         // -------------------------------------------------
-        // Save song information in MySQL
+        // CREATE SONG ENTITY
         // -------------------------------------------------
 
         Song song =
@@ -269,9 +377,37 @@ public class SongService {
         );
 
 
+        // -------------------------------------------------
+        // SAVE SONG TO DATABASE
+        // -------------------------------------------------
+
         return songRepository.save(
                 song
         );
+
+    }
+
+
+    // =====================================================
+    // NORMALIZE FILE NAME
+    // =====================================================
+
+    private String normalizeFileName(
+            String fileName
+    ) {
+
+        if (
+                fileName == null
+        ) {
+
+            return "";
+
+        }
+
+
+        return fileName
+                .trim()
+                .toLowerCase();
 
     }
 
@@ -285,7 +421,7 @@ public class SongService {
     ) {
 
         // -------------------------------------------------
-        // Find song
+        // FIND SONG
         // -------------------------------------------------
 
         Song song =
@@ -300,7 +436,7 @@ public class SongService {
 
 
         // -------------------------------------------------
-        // Get stored file path
+        // GET STORED FILE PATH
         // -------------------------------------------------
 
         Path filePath =
@@ -312,7 +448,7 @@ public class SongService {
 
 
         // -------------------------------------------------
-        // Check file
+        // CHECK FILE EXISTS
         // -------------------------------------------------
 
         if (
@@ -328,6 +464,10 @@ public class SongService {
         }
 
 
+        // -------------------------------------------------
+        // CHECK FILE IS READABLE
+        // -------------------------------------------------
+
         if (
                 !Files.isReadable(
                         filePath
@@ -342,7 +482,7 @@ public class SongService {
 
 
         // -------------------------------------------------
-        // Convert to Resource
+        // CREATE RESOURCE
         // -------------------------------------------------
 
         try {
@@ -382,18 +522,6 @@ public class SongService {
     // =====================================================
     // DELETE SONG
     // =====================================================
-    //
-    // Delete flow:
-    //
-    // Song
-    //   ↓
-    // Remove Favorite
-    //   ↓
-    // Delete MP3
-    //   ↓
-    // Delete Song record
-    //
-    // =====================================================
 
     @Transactional
     public void deleteSong(
@@ -401,7 +529,7 @@ public class SongService {
     ) {
 
         // -------------------------------------------------
-        // Find song
+        // FIND SONG
         // -------------------------------------------------
 
         Song song =
@@ -416,7 +544,7 @@ public class SongService {
 
 
         // -------------------------------------------------
-        // Remove favorite relationship
+        // REMOVE FAVORITE RELATIONSHIP
         // -------------------------------------------------
 
         if (
@@ -431,7 +559,7 @@ public class SongService {
 
 
         // -------------------------------------------------
-        // Delete physical audio file
+        // DELETE PHYSICAL AUDIO FILE
         // -------------------------------------------------
 
         try {
@@ -459,7 +587,7 @@ public class SongService {
 
 
         // -------------------------------------------------
-        // Delete song from MySQL
+        // DELETE SONG FROM MYSQL
         // -------------------------------------------------
 
         songRepository.delete(
@@ -519,6 +647,7 @@ public class SongService {
         ) {
 
             return "";
+
         }
 
 
