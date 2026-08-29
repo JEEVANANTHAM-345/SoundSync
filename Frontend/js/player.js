@@ -165,7 +165,7 @@ function getPlayerAudioUrl(
 
 
     return (
-        "https://d32bf4ff6j43.cloudfront.net/api/songs/" +
+        "https://d32bf4ff6jc43.cloudfront.net/api/songs/" +
         songId +
         "/audio"
     );
