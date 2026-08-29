@@ -165,7 +165,7 @@ function getPlayerAudioUrl(
 
 
     return (
-        "http://soundsync-backend.eba-dheknnac.ap-south-1.elasticbeanstalk.com/api/songs/" +
+        "https://d32bf4ff6j43.cloudfront.net/api/songs/" +
         songId +
         "/audio"
     );

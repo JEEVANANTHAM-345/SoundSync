@@ -6,7 +6,7 @@
  */
 
 const API_BASE_URL =
-    "http://soundsync-backend.eba-dheknnac.ap-south-1.elasticbeanstalk.com";
+    "https://d32bf4ff6j43.cloudfront.net";
 
 const SONGS_API =
     `${API_BASE_URL}/api/songs`;
