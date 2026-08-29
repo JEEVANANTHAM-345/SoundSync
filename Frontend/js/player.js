@@ -165,7 +165,7 @@ function getPlayerAudioUrl(
 
 
     return (
-        "http://localhost:8080/api/songs/" +
+        "http://soundsync-backend.eba-dheknnac.ap-south-1.elasticbeanstalk.com/api/songs/" +
         songId +
         "/audio"
     );

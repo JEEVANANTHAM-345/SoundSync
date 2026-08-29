@@ -322,8 +322,7 @@ Run:
 
 The backend will start on:
 
-    http://localhost:8080
-
+    AWS backend URL for documentation
 ### Start the Frontend
 
 Open the Frontend folder in Visual Studio Code and run index.html using Live Server.

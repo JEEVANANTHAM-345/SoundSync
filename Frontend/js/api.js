@@ -6,7 +6,7 @@
  */
 
 const API_BASE_URL =
-    "http://localhost:8080";
+    "http://soundsync-backend.eba-dheknnac.ap-south-1.elasticbeanstalk.com";
 
 const SONGS_API =
     `${API_BASE_URL}/api/songs`;

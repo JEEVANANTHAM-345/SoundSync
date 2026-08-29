@@ -18,20 +18,20 @@ public class CorsConfig {
                 new CorsConfiguration();
 
         /*
-         * Frontend is running through Live Server.
+         * Allow both local development and
+         * the deployed AWS Amplify frontend.
          */
-
         configuration.setAllowedOrigins(
                 List.of(
                         "http://localhost:5500",
-                        "http://127.0.0.1:5500"
+                        "http://127.0.0.1:5500",
+                        "https://main.d2mcowfium27zq.amplifyapp.com"
                 )
         );
 
         /*
          * Allow the methods used by SoundSync.
          */
-
         configuration.setAllowedMethods(
                 List.of(
                         "GET",
@@ -46,23 +46,18 @@ public class CorsConfig {
         /*
          * Allow all request headers.
          */
-
         configuration.setAllowedHeaders(
                 List.of("*")
         );
 
         /*
-         * We are not using cookies/authentication yet.
+         * SoundSync is not using cookies/authentication yet.
          */
-
-        configuration.setAllowCredentials(
-                false
-        );
+        configuration.setAllowCredentials(false);
 
         /*
          * Expose headers useful for media requests.
          */
-
         configuration.setExposedHeaders(
                 List.of(
                         "Content-Type",
@@ -74,10 +69,9 @@ public class CorsConfig {
         );
 
         /*
-         * Register CORS configuration
-         * for every backend endpoint.
+         * Apply this CORS configuration
+         * to every backend endpoint.
          */
-
         UrlBasedCorsConfigurationSource source =
                 new UrlBasedCorsConfigurationSource();
 
@@ -88,5 +82,4 @@ public class CorsConfig {
 
         return source;
     }
-
 }
